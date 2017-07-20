@@ -25,6 +25,10 @@ library ASCSDLL {
         return getAttribute(self, curr, "next");
     }
 
+    function getPrev(Data storage self, uint curr) returns (uint) {
+        return getAttribute(self, curr, "prev");
+    }
+
     function insert(Data storage self, uint prev, uint id, uint[] attrVals) {
         require(self.attributes.length == attrVals.length);
 
@@ -70,7 +74,7 @@ library ASCSDLL {
 
     /// removes curr nodes's links from list but preserves its data
     function remove(Data storage self, uint curr) {
-        uint prev = getAttribute(self, curr, "prev");
+        uint prev = getPrev(self, curr);
         uint next = getNext(self, curr);
 
         setAttribute(self, prev, "next", next);
