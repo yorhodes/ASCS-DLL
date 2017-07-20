@@ -13,4 +13,12 @@ contract  testASCSDLL {
     function getAttrNames() returns (bytes32[]){
         return dll.attrNames;
     }
+
+    function getAttr(uint curr, bytes32 attrName) returns (uint) {
+        return dll.getAttr(curr, attrName);
+    }
+
+    function setAttr(uint curr, bytes32 attrName, uint attrVal) {
+        dll.setAttr(curr, attrName, attrVal);
+    }
 }
