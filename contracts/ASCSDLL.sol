@@ -39,4 +39,15 @@ library ASCSDLL {
             setAttribute(curr, attributes[idx], attributeValues[idx]);
         }
     }
+
+    function remove(uint curr) {
+        uint prev = getAttribute(curr, "prev");
+        uint next = getAttribute(curr, "next");
+
+        setAttribute(prev, "next", next);
+        setAttribute(next, "prev", prev);
+
+        setAttribute(curr, "next", curr);
+        setAttribute(curr, "prev", curr);
+    }
 }
