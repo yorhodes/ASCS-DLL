@@ -13,20 +13,20 @@ library ASCSDLL {
         self.sortAttrIdx = _sortAttrIdx;
     }
 
-    function getAttribute(Data storage self, uint curr, bytes32 attrName) returns (uint) {
+    function getAttr(Data storage self, uint curr, bytes32 attrName) returns (uint) {
         return self.store[sha3(msg.sender, curr, attrName)];
     }
 
-    function setAttribute(Data storage self, uint curr, bytes32 attrName, uint attrVal) {
+    function setAttr(Data storage self, uint curr, bytes32 attrName, uint attrVal) {
         self.store[sha3(msg.sender, curr, attrName)] = attrVal;
     }
 
     function getNext(Data storage self, uint curr) returns (uint) {
-        return getAttribute(self, curr, "next");
+        return getAttr(self, curr, "next");
     }
 
     function getPrev(Data storage self, uint curr) returns (uint) {
-        return getAttribute(self, curr, "prev");
+        return getAttr(self, curr, "prev");
     }
 
     function insert(Data storage self, uint prev, uint id, uint[] attrVals) {
@@ -35,18 +35,18 @@ library ASCSDLL {
         uint next = getNext(self, prev);
 
         // set next node's prev attribute to new node id
-        setAttribute(self, next, "prev", id);              
+        setAttr(self, next, "prev", id);
 
         // set prev node's next attribute to new node id
-        setAttribute(self, prev, "next", id);             
+        setAttr(self, prev, "next", id);
 
         // make new node point to prev and next
-        setAttribute(self, id, "prev", prev); 
-        setAttribute(self, id, "next", next); 
+        setAttr(self, id, "prev", prev);
+        setAttr(self, id, "next", next);
 
         // set additional attributes of new node
         for(uint idx = 0; idx < self.attrNames.length; idx++) {
-            setAttribute(self, id, self.attrNames[idx], attrVals[idx]);
+            setAttr(self, id, self.attrNames[idx], attrVals[idx]);
         }
     }
     
@@ -62,8 +62,8 @@ library ASCSDLL {
         }
 
         // get prev and next sort attribute values to check for position
-        uint prevSortAttrVal = getAttribute(self, prev, self.attrNames[self.sortAttrIdx]);
-        uint nextSortAttrVal = getAttribute(self, next, self.attrNames[self.sortAttrIdx]);
+        uint prevSortAttrVal = getAttr(self, prev, self.attrNames[self.sortAttrIdx]);
+        uint nextSortAttrVal = getAttr(self, next, self.attrNames[self.sortAttrIdx]);
 
         // make sure sort attribute value of curr is in order with adjacent nodes
         if ((prevSortAttrVal <= sortAttrVal) && ((sortAttrVal <= nextSortAttrVal) || next == 0)) {
@@ -77,11 +77,11 @@ library ASCSDLL {
         uint prev = getPrev(self, curr);
         uint next = getNext(self, curr);
 
-        setAttribute(self, prev, "next", next);
-        setAttribute(self, next, "prev", prev);
+        setAttr(self, prev, "next", next);
+        setAttr(self, next, "prev", prev);
 
-        setAttribute(self, curr, "next", curr);
-        setAttribute(self, curr, "prev", curr);
+        setAttr(self, curr, "next", curr);
+        setAttr(self, curr, "prev", curr);
     }
 
     /// deletes nodes attribute data
@@ -90,7 +90,7 @@ library ASCSDLL {
 
         // reset additional attributes of node
         for(uint idx = 0; idx < self.attrNames.length; idx++) {
-            setAttribute(self, curr, self.attrNames[idx], 0);
+            setAttr(self, curr, self.attrNames[idx], 0);
         }
     }
 }
