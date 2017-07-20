@@ -21,10 +21,14 @@ library ASCSDLL {
         self.store[sha3(msg.sender, curr, attrName)] = attrVal;
     }
 
+    function getNext(Data storage self, uint curr) returns (uint) {
+        return getAttribute(self, curr, "next");
+    }
+
     function insert(Data storage self, uint prev, uint id, uint[] attrVals) {
         require(self.attributes.length == attrVals.length);
 
-        uint next = getAttribute(self, prev, "next");
+        uint next = getNext(self, prev);
 
         // set next node's prev attribute to new node id
         setAttribute(self, next, "prev", id);              
@@ -45,12 +49,12 @@ library ASCSDLL {
     /// validate position of curr given prev and its sort attribute value
     function validatePosition(Data storage self, uint prev, uint curr, uint sortAttrVal) returns (bool valid) {
         // get next node  
-        uint next = getAttribute(self, prev, "next");
+        uint next = getNext(self, prev);
 
         // if curr is equal to next, thus next is being updated,
         // update next with the node one further
         if (next == curr) {
-            next = getAttribute(self, next, "next");
+            next = getNext(self, next);
         }
 
         // get prev and next sort attribute values to check for position
@@ -67,7 +71,7 @@ library ASCSDLL {
     /// removes curr nodes's links from list but preserves its data
     function remove(Data storage self, uint curr) {
         uint prev = getAttribute(self, curr, "prev");
-        uint next = getAttribute(self, curr, "next");
+        uint next = getNext(self, curr);
 
         setAttribute(self, prev, "next", next);
         setAttribute(self, next, "prev", prev);
