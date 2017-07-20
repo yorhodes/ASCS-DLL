@@ -42,7 +42,7 @@ library ASCSDLL {
         }
     }
 
-    /// preserves additional data
+    /// removes curr nodes's links from list but preserves its data
     function remove(Data storage self, uint curr) {
         uint prev = getAttribute(self, curr, "prev");
         uint next = getAttribute(self, curr, "next");
@@ -54,7 +54,7 @@ library ASCSDLL {
         setAttribute(self, curr, "prev", curr);
     }
 
-    /// destroyes additional data
+    /// deletes nodes attribute data
     function reset(Data storage self, uint curr) {
         remove(self, curr);
 
