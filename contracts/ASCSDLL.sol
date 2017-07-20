@@ -11,7 +11,7 @@ library ASCSDLL {
         sortAttributeIndex = _sortAttributeIndex;
     }
 
-    function getAttribute(uint curr, bytes32 attributeName) returns uint {
+    function getAttribute(uint curr, bytes32 attributeName) returns (uint) {
         return store[sha3(msg.sender, curr, attributeName)];
     }
 
@@ -40,6 +40,7 @@ library ASCSDLL {
         }
     }
 
+    /// preserves additional data
     function remove(uint curr) {
         uint prev = getAttribute(curr, "prev");
         uint next = getAttribute(curr, "next");
@@ -49,5 +50,15 @@ library ASCSDLL {
 
         setAttribute(curr, "next", curr);
         setAttribute(curr, "prev", curr);
+    }
+
+    /// destroyes additional data
+    function reset(uint curr) {
+        remove(curr);
+
+        // reset additional attributes of node
+        for(uint idx = 0; idx < attributes.length; idx++) {
+            setAttribute(curr, attributes[idx], 0);
+        }
     }
 }
