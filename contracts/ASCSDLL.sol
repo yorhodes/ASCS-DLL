@@ -13,16 +13,16 @@ library ASCSDLL {
         self.sortAttributeIndex = _sortAttributeIndex;
     }
 
-    function getAttribute(Data storage self, uint curr, bytes32 attributeName) returns (uint) {
-        return self.store[sha3(msg.sender, curr, attributeName)];
+    function getAttribute(Data storage self, uint curr, bytes32 attrName) returns (uint) {
+        return self.store[sha3(msg.sender, curr, attrName)];
     }
 
-    function setAttribute(Data storage self, uint curr, bytes32 attributeName, uint attributeValue) {
-        self.store[sha3(msg.sender, curr, attributeName)] = attributeValue;
+    function setAttribute(Data storage self, uint curr, bytes32 attrName, uint attrVal) {
+        self.store[sha3(msg.sender, curr, attrName)] = attrVal;
     }
 
-    function insert(Data storage self, uint prev, uint id, uint[] attributeValues) {
-        require(self.attributes.length == attributeValues.length);
+    function insert(Data storage self, uint prev, uint id, uint[] attrVals) {
+        require(self.attributes.length == attrVals.length);
 
         uint next = getAttribute(self, prev, "next");
 
@@ -38,7 +38,7 @@ library ASCSDLL {
 
         // set additional attributes of new node
         for(uint idx = 0; idx < self.attributes.length; idx++) {
-            setAttribute(self, id, self.attributes[idx], attributeValues[idx]);
+            setAttribute(self, id, self.attributes[idx], attrVals[idx]);
         }
     }
     
