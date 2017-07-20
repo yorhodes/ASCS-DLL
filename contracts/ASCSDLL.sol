@@ -41,6 +41,28 @@ library ASCSDLL {
             setAttribute(self, id, self.attributes[idx], attributeValues[idx]);
         }
     }
+    
+    /// validate position of curr given prev and its sort attribute value
+    function validatePosition(Data storage self, uint prev, uint curr, uint sortAttrVal) returns (bool valid) {
+        // get next node  
+        uint next = getAttribute(self, prev, "next");
+
+        // if curr is equal to next, thus next is being updated,
+        // update next with the node one further
+        if (next == curr) {
+            next = getAttribute(self, next, "next");
+        }
+
+        // get prev and next sort attribute values to check for position
+        uint prevSortAttrVal = getAttribute(self, prev, self.attributes[self.sortAttributeIndex]);
+        uint nextSortAttrVal = getAttribute(self, next, self.attributes[self.sortAttributeIndex]);
+
+        // make sure sort attribute value of curr is in order with adjacent nodes
+        if ((prevSortAttrVal <= sortAttrVal) && ((sortAttrVal <= nextSortAttrVal) || next == 0)) {
+            return true;
+        }
+        return false;
+    }
 
     /// removes curr nodes's links from list but preserves its data
     function remove(Data storage self, uint curr) {
