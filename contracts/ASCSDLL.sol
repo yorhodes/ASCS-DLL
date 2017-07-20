@@ -10,4 +10,12 @@ library ASCSDLL {
         attributes = _attributes;
         sortAttributeIndex = _sortAttributeIndex;
     }
+
+    function getAttribute(uint curr, bytes32 attributeName) returns uint {
+        return store[sha3(msg.sender, curr, attributeName)];
+    }
+
+    function setAttribute(uint curr, bytes32 attributeName, uint attributeValue) {
+        store[sha3(msg.sender, curr, attributeName)] = attributeValue;
+    }
 }
