@@ -31,6 +31,7 @@ library ASCSDLL {
 
     function insert(Data storage self, uint prev, uint id, uint[] attrVals) {
         require(self.attrNames.length == attrVals.length);
+        require(validatePosition(self, prev, id, attrVals[self.sortAttrIdx]));
 
         uint next = getNext(self, prev);
 
