@@ -29,4 +29,8 @@ contract  testASCSDLL {
     function getPrev(uint curr) returns (uint) {
         return dll.getPrev(curr);
     }
+
+    function insert(uint prev, uint id, uint[] attrVals) {
+        dll.insert(prev, id, attrVals);
+    }
 }

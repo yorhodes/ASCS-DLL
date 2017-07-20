@@ -31,9 +31,13 @@ library ASCSDLL {
 
     function insert(Data storage self, uint prev, uint id, uint[] attrVals) {
         require(self.attrNames.length == attrVals.length);
-        require(validatePosition(self, prev, id, attrVals[self.sortAttrIdx]));
 
+        // if next is equal to id, thus id is being updated,
+        // assign next to one node further
         uint next = getNext(self, prev);
+        next = (next == id) ? getNext(self, id) : next;
+
+        require(validatePosition(self, prev, next, attrVals[self.sortAttrIdx]));
 
         // set next node's prev attribute to new node id
         setAttr(self, next, "prev", id);
@@ -52,16 +56,7 @@ library ASCSDLL {
     }
     
     /// validate position of curr given prev and its sort attribute value
-    function validatePosition(Data storage self, uint prev, uint curr, uint sortAttrVal) returns (bool valid) {
-        // get next node  
-        uint next = getNext(self, prev);
-
-        // if curr is equal to next, thus next is being updated,
-        // update next with the node one further
-        if (next == curr) {
-            next = getNext(self, next);
-        }
-
+    function validatePosition(Data storage self, uint prev, uint next, uint sortAttrVal) returns (bool valid) {
         // get prev and next sort attribute values to check for position
         uint prevSortAttrVal = getAttr(self, prev, self.attrNames[self.sortAttrIdx]);
         uint nextSortAttrVal = getAttr(self, next, self.attrNames[self.sortAttrIdx]);

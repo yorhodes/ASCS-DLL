@@ -1,6 +1,7 @@
 const testASCSDLL = artifacts.require('testASCSDLL.sol');
 const abi = require('ethereumjs-abi');
 
+const re = new RegExp("(invalid opcode)","i");
 const encodeBytes32 = (stringArray) => {
     return stringArray.map((string) =>  {
         return "0x" + abi.rawEncode(["bytes32"], [ string ]).toString('hex');
@@ -43,5 +44,32 @@ contract('Library Testing', (accounts) => {
         assert.equal(prev, '10', "getPrev gets prev incorrectly");
     });
 
+    it("should insert to an empty list", async () => {
+        let proxy = await testASCSDLL.deployed();
+        await proxy.insert('0', '10', [10, 0xabc], {from:accounts[1]}); 
+        let next = await proxy.getNext.call('0', {from:accounts[1]});
+        assert.equal(next, '10', "Inserted node is not in list");
+        let nextAttr0 = await proxy.getAttr.call(next, 'numTokens', {from:accounts[1]});
+        let nextAttr1 = await proxy.getAttr.call(next, 'commitHash', {from:accounts[1]});
+        assert.equal(nextAttr0, 10, "Integer attribute inserted incorrectly");
+        assert.equal(nextAttr1, Number('0xabc'));
+    });
+
+    it("should throw when trying to insert in wrong order", async () => {
+        let proxy = await testASCSDLL.deployed();
+        try {
+            let tx = await proxy.insert('0', '8', [15, 0xabc], {from:accounts[1]});
+            assert("insert allowed wrong ordering");
+        }
+        catch(err) {}
+    });
+
+    it("should update when trying to insert in existing node id", async () => {
+        let proxy = await testASCSDLL.deployed();
+        await proxy.insert('0', '10', [20, 0xabc], {from:accounts[1]}); 
+        let next = await proxy.getNext.call('0', {from:accounts[1]});
+        let nextAttr0 = await proxy.getAttr.call(next, 'numTokens', {from:accounts[1]});
+        assert.equal(nextAttr0, 20, "Integer attribute updated incorrectly");
+    });
 });
 
