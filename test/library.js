@@ -35,6 +35,13 @@ contract('Library Testing', (accounts) => {
         assert.equal(prev, '10', "setAttr set attribute incorrectly");
     });
 
+    it("should check getPrev and getNext", async () => {
+        let proxy = await testASCSDLL.deployed();
+        let prev = await proxy.getPrev.call('25');
+        let next = await proxy.getNext.call('10');
+        assert.equal(next, '25', "getNext gets next incorrectly");
+        assert.equal(prev, '10', "getPrev gets prev incorrectly");
+    });
 
 });
 
