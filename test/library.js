@@ -71,5 +71,20 @@ contract('Library Testing', (accounts) => {
         let nextAttr0 = await proxy.getAttr.call(next, 'numTokens', {from:accounts[1]});
         assert.equal(nextAttr0, 20, "Integer attribute updated incorrectly");
     });
+
+    it("should remove node from list", async () => {
+        let proxy = await testASCSDLL.deployed();
+        await proxy.remove('10', {from:accounts[1]});
+        let next0 = await proxy.getNext.call('0', {from:accounts[1]});
+        let prev0 = await proxy.getPrev.call('0', {from:accounts[1]});
+        assert.equal(prev0, '0', 'node not removed correctly');
+        assert.equal(next0, '0', 'node not removed correctly');
+        let nextRemoved = await proxy.getNext.call('10', {from:accounts[1]});
+        let prevRemoved = await proxy.getPrev.call('10', {from:accounts[1]});
+        assert.equal(prevRemoved, '10', 'node not removed correctly');
+        assert.equal(nextRemoved, '10', 'node not removed correctly');
+
+    });
+
 });
 

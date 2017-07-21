@@ -33,4 +33,8 @@ contract  testASCSDLL {
     function insert(uint prev, uint id, uint[] attrVals) {
         dll.insert(prev, id, attrVals);
     }
+
+    function remove(uint curr) {
+        dll.remove(curr);
+    }
 }
