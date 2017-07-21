@@ -37,4 +37,8 @@ contract  testASCSDLL {
     function remove(uint curr) {
         dll.remove(curr);
     }
+
+    function reset(uint curr) {
+        dll.reset(curr);
+    }
 }

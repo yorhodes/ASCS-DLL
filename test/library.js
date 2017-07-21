@@ -83,8 +83,15 @@ contract('Library Testing', (accounts) => {
         let prevRemoved = await proxy.getPrev.call('10', {from:accounts[1]});
         assert.equal(prevRemoved, '10', 'node not removed correctly');
         assert.equal(nextRemoved, '10', 'node not removed correctly');
-
     });
 
+    it("should reset attributes of the node", async () => {
+        let proxy = await testASCSDLL.deployed();
+        await proxy.reset('10', {from:accounts[1]});
+        let attr0 = await proxy.getAttr.call('10', 'numTokens', {from:accounts[1]});
+        let attr1 = await proxy.getAttr.call('10', 'commitHash', {from:accounts[1]});
+        assert.equal(attr0, '0', 'node not resetted correctly');
+        assert.equal(attr1, '0', 'node not resetted correctly');
+    });
 });
 
